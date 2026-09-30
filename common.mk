@@ -139,6 +139,9 @@ PRODUCT_COPY_FILES += \
 # Dolby
 $(call inherit-product, vendor/sony/dolby/sonydolby.mk)
 
+# phton
+$(call soong_config_set_bool,stagefright,target_disable_thumbnail_block_model,true)
+
 # DRM
 PRODUCT_PACKAGES += \
     android.hardware.drm-service.clearkey
