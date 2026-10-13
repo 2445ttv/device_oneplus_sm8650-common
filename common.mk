@@ -139,6 +139,35 @@ PRODUCT_COPY_FILES += \
 # Dolby
 $(call inherit-product, vendor/sony/dolby/sonydolby.mk)
 
+# telegram
+$(call soong_config_set_bool,stagefright,target_disable_thumbnail_block_model,true)
+
+# Passthrough charging
+PRODUCT_PACKAGES += \
+    BypassCharge
+
+# Enable whole-program R8 Java optimizations for SystemUI and system_server,
+# but also allow explicit overriding for testing and development.
+SYSTEM_OPTIMIZE_JAVA := true
+SYSTEMUI_OPTIMIZE_JAVA := true
+
+# Reduce system server verbosity.
+PRODUCT_SYSTEM_SERVER_DEBUG_INFO := false
+
+# Logging - OnePlus Ace 5 (Qualcomm / OPLUS)
+SPAMMY_LOG_TAGS := \
+    SDM \
+    SRE \
+    android.hardware.power-service-qti \
+    libsensor-boledalgo \
+    sensors \
+    vendor.qti.hardware.display.composer-service
+
+ifneq ($(TARGET_BUILD_VARIANT),eng)
+PRODUCT_VENDOR_PROPERTIES += \
+    $(foreach tag,$(SPAMMY_LOG_TAGS),log.tag.$(tag)=E)
+endif
+
 # DRM
 PRODUCT_PACKAGES += \
     android.hardware.drm-service.clearkey
@@ -186,9 +215,6 @@ PRODUCT_PACKAGES += \
 # Hotword enrollment
 PRODUCT_COPY_FILES += \
     $(LOCAL_PATH)/configs/permissions/privapp-permissions-hotword.xml:$(TARGET_COPY_OUT_PRODUCT)/etc/permissions/privapp-permissions-hotword.xml
-
-# HWUI
-TARGET_USES_VULKAN := true
 
 # Init
 PRODUCT_PACKAGES += \
