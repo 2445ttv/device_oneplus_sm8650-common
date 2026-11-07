@@ -143,6 +143,32 @@ $(call soong_config_set,BIONIC,use_jemalloc_for_display_stack,false)
 # Dolby
 $(call inherit-product, vendor/sony/dolby/sonydolby.mk)
 
+# Passthrough charging
+PRODUCT_PACKAGES += \
+    BypassCharge
+
+# Enable whole-program R8 Java optimizations for SystemUI and system_server,
+# but also allow explicit overriding for testing and development.
+SYSTEM_OPTIMIZE_JAVA := true
+SYSTEMUI_OPTIMIZE_JAVA := true
+
+# Reduce system server verbosity.
+PRODUCT_SYSTEM_SERVER_DEBUG_INFO := false
+
+# Logging - OnePlus Ace 5 (Qualcomm / OPLUS)
+SPAMMY_LOG_TAGS := \
+    SDM \
+    SRE \
+    android.hardware.power-service-qti \
+    libsensor-boledalgo \
+    sensors \
+    vendor.qti.hardware.display.composer-service
+
+ifneq ($(TARGET_BUILD_VARIANT),eng)
+PRODUCT_VENDOR_PROPERTIES += \
+    $(foreach tag,$(SPAMMY_LOG_TAGS),log.tag.$(tag)=E)
+endif
+
 # DRM
 PRODUCT_PACKAGES += \
     android.hardware.drm-service.clearkey
